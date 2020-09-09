@@ -17,6 +17,9 @@ public class UserService {
     }
 
     public void registerUser(User user) {
+        if(userList.containsKey(user.getUsername())){
+            throw new RegisterUserFailedException("此用户名已存在");
+        }
         userList.put(user.getUsername(),user);
     }
 }
