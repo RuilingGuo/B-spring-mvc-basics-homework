@@ -21,9 +21,20 @@ public class UserControllerExceptionHandler {
     @ExceptionHandler(RegisterUserFailedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<ErrorMessage> handleHttpException(RegisterUserFailedException ex) {
+    public ResponseEntity<ErrorMessage> handleRegisterBadRequest(RegisterUserFailedException ex) {
+        log.warn("invalid request", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                .body(new ErrorMessage(ex.getMessage(),HttpStatus.BAD_REQUEST.value()));
+                .body(new ErrorMessage(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<ErrorMessage> handleVaildException(MethodArgumentNotValidException ex) {
+        log.warn("invalid request", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                .body(new ErrorMessage(ex.getBindingResult().getFieldError().getDefaultMessage(),
+                        HttpStatus.BAD_REQUEST.value()));
     }
 
 }

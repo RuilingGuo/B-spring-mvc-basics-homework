@@ -16,14 +16,13 @@ import javax.validation.constraints.Size;
 @Data
 public class User {
 
-    @NotNull
-    @Size(min = 3,max = 10)
-    @Pattern(regexp = "^[0-9a-zA-Z_]{1,}$")
+    @NotNull(message = "用户名不为空")
+    @Size(min = 3,max = 10, message = "用户名不合法，长度应为3到10位")
+    @Pattern(regexp = "^[0-9a-zA-Z_]{1,}$",message = "用户名不合法，用户名只能由字母、数字、下划线")
     private String username;
-    @NotNull
-    @Size(min = 5, max = 12)
+    @NotNull(message = "密码不为空")
+    @Size(min = 5, max = 12, message = "密码是不合法，密码长度应为5到12位置")
     private String password;
-    @NotNull
-    @Email
+    @Email(message = "邮箱地址不合法")
     private String email;
 }
