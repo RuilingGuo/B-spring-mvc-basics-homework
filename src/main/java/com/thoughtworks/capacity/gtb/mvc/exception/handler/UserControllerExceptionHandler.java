@@ -23,7 +23,7 @@ public class UserControllerExceptionHandler {
     @ResponseBody
     public ResponseEntity<ErrorMessage> handleHttpException(RegisterUserFailedException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                .body(new ErrorMessage(ex.getMessage()));
+                .body(new ErrorMessage(ex.getMessage(),HttpStatus.BAD_REQUEST.value()));
     }
 
 }
