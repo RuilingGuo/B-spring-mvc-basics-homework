@@ -1,6 +1,7 @@
 package com.thoughtworks.capacity.gtb.mvc.exception.handler;
 
 import com.thoughtworks.capacity.gtb.mvc.exception.RegisterUserFailedException;
+import com.thoughtworks.capacity.gtb.mvc.exception.UserLoginException;
 import com.thoughtworks.capacity.gtb.mvc.exception.error.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,15 @@ public class UserControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                 .body(new ErrorMessage(ex.getBindingResult().getFieldError().getDefaultMessage(),
                         HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(UserLoginException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<ErrorMessage> handleUserLoginBadRequest(UserLoginException ex) {
+        log.warn("invalid request", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                .body(new ErrorMessage(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
 }

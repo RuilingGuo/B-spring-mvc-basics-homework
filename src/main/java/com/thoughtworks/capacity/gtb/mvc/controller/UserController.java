@@ -2,12 +2,10 @@ package com.thoughtworks.capacity.gtb.mvc.controller;
 
 import com.thoughtworks.capacity.gtb.mvc.domain.User;
 import com.thoughtworks.capacity.gtb.mvc.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,6 +21,13 @@ public class UserController {
     @PostMapping(value = "/register")
     public void registerUser(@RequestBody @Valid User user){
         userService.registerUser(user);
+    }
+
+    @GetMapping(value = "/login")
+    public ResponseEntity<User> login(@RequestParam String username,
+                                      @RequestParam String password){
+        User user = userService.login(username,password);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
 }
