@@ -13,22 +13,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
 public class UserControllerExceptionHandler {
 
-    @ExceptionHandler(RegisterUserFailedException.class)
+    @ExceptionHandler({RegisterUserFailedException.class, UserLoginException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<ErrorMessage> handleRegisterBadRequest(RegisterUserFailedException ex) {
+    public ResponseEntity<ErrorMessage> handleRegisterBadRequest(RuntimeException ex) {
         log.warn("invalid request", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                 .body(new ErrorMessage(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResponseEntity<ErrorMessage> handleVaildException(MethodArgumentNotValidException ex) {
@@ -38,13 +41,14 @@ public class UserControllerExceptionHandler {
                         HttpStatus.BAD_REQUEST.value()));
     }
 
-    @ExceptionHandler(UserLoginException.class)
+    @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<ErrorMessage> handleUserLoginBadRequest(UserLoginException ex) {
+    public ResponseEntity<ErrorMessage> handleVaildException(ConstraintViolationException ex) {
         log.warn("invalid request", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                .body(new ErrorMessage(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
+                .body(new ErrorMessage(ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining()),
+                        HttpStatus.BAD_REQUEST.value()));
     }
 
 }
